@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GoogleMapAPI</string>
+    <string name="hint_edit_text">Укажите координаты или название объекта</string>
+    <string name="searchBtn">Ищем</string>
+</resources>
