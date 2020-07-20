@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText input_search;
+    private EditText inputSearch;
     private Button searchBtn;
     private String formatUri;
 
@@ -23,33 +23,46 @@ public class MainActivity extends AppCompatActivity {
         searchStart();
     }
 
-   private void searchStart() {
+    private void initView() {
+        inputSearch = findViewById(R.id.input_address);
+        searchBtn = findViewById(R.id.search);
+    }
+
+    private void searchStart() {
         searchBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                String searchData = input_search.getText().toString();
+                String searchData = inputSearch.getText().toString();
                 Intent searchIntent = new Intent(Intent.ACTION_VIEW);
-                if (searchData.equals("")) {
+                if (!searchData.equals("")) {
+                    int countOfLetters = 0;
+                    for (int i = 0; i < searchData.length(); i++) {
+                        if (Character.isLetter(searchData.charAt(i))) {
+                            countOfLetters++;
+                        }
+                    }
+                    if (countOfLetters == searchData.length()) {
+                        formatUri = "geo:?q=" + searchData;
+                    } else if (countOfLetters == 0) {
+                        formatUri = "geo:" + searchData;
+                    } else {
+                        Toast.makeText(v.getContext(), R.string.errorFormat,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    searchIntent.setData(Uri.parse(formatUri));
+                    inputSearch.setText("");
+                    if (searchIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(searchIntent);
+                    }
+
+                } else {
                     Toast.makeText(v.getContext(), R.string.hint_edit_text,
                             Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (Character.isLetter(searchData.charAt(0))) {
-                    formatUri = "geo:?q=" + searchData;
-                    searchIntent.setData(Uri.parse(formatUri));
-                } else {
-                    formatUri = "geo:" + searchData;
-                    searchIntent.setData(Uri.parse(formatUri));
-                }
-                input_search.setText("");
-                if (searchIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(searchIntent);
                 }
             }
         });
     }
 
-    private void initView() {
-        input_search = findViewById(R.id.input_address);
-        searchBtn = findViewById(R.id.search);
-    }
 }
