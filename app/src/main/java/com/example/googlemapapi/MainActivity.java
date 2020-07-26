@@ -36,27 +36,17 @@ public class MainActivity extends AppCompatActivity {
                 String searchData = inputSearch.getText().toString();
                 Intent searchIntent = new Intent(Intent.ACTION_VIEW);
                 if (!searchData.equals("")) {
-                    int countOfLetters = 0;
+                    formatUri = "geo:" + searchData;
                     for (int i = 0; i < searchData.length(); i++) {
                         if (Character.isLetter(searchData.charAt(i))) {
-                            countOfLetters++;
+                            formatUri = "geo:?q=" + searchData;
                         }
-                    }
-                    if (countOfLetters == searchData.length()) {
-                        formatUri = "geo:?q=" + searchData;
-                    } else if (countOfLetters == 0) {
-                        formatUri = "geo:" + searchData;
-                    } else {
-                        Toast.makeText(v.getContext(), R.string.errorFormat,
-                                Toast.LENGTH_SHORT).show();
-                        return;
                     }
                     searchIntent.setData(Uri.parse(formatUri));
                     inputSearch.setText("");
                     if (searchIntent.resolveActivity(getPackageManager()) != null) {
                         startActivity(searchIntent);
                     }
-
                 } else {
                     Toast.makeText(v.getContext(), R.string.hint_edit_text,
                             Toast.LENGTH_SHORT).show();
